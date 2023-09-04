@@ -1,0 +1,31 @@
+[
+    {
+        "text": "I just had the same error.\n\nI fixed it by restarting Chrome (typing `about:restart` into the location bar, which reopens all your tabs as before). Hope that helps others.",
+        "upvotes": 2,
+        "downvotes": 0,
+        "user_id": "WhiteNinjaOz",
+        "replies": []
+    },
+    {
+        "text": "The warning says: \"You can no longer make edits: Cannot open IndexedDB. Your Chrome profile may be damaged. If you changed any chrome://flags then please reset them, then restart your browser. If issues persist, try making a new Chrome user. Contact support if that does not fix the issue.\" \n\n  \nFor reference, I use Microsoft Edge and set the Notion website to open as my start-up page. I recently changed the email I use for Notion to avail a Personal Pro subscription for free thru my university email.  \n\nWhat does this warning mean? How can I fix it?",
+        "upvotes": 1,
+        "downvotes": 0,
+        "user_id": "ultmatum",
+        "replies": [
+            {
+                "text": "restarting my computer worked for me",
+                "upvotes": 1,
+                "downvotes": 0,
+                "user_id": "classic_ken",
+                "replies": []
+            }
+        ]
+    },
+    {
+        "text": "Have you tried reinstalling chrome?",
+        "upvotes": 1,
+        "downvotes": 0,
+        "user_id": "shivas-",
+        "replies": []
+    }
+]

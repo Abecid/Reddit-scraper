@@ -24,7 +24,25 @@ REDDIT_USER_AGENT = os.environ.get("REDDIT_USER_AGENT")
 
 # URL of the Reddit post
 post_url = "https://www.reddit.com/r/strength_training/comments/1655isb/back_rounding_on_heavy_deadlift_infoquestion_in/"
-urls = [post_url]
+text_post_url = "https://www.reddit.com/r/Notion/comments/irw19f/cannot_save_changes_what_does_this_mean/"
+urls = [post_url, text_post_url]
+
+def extract_replies(comment):
+    """
+    Recursive function to extract nested comments and their data.
+    """
+    comment_data = {
+        "text": comment.body,
+        "upvotes": comment.score,
+        "downvotes": comment.downs,
+        "user_id": str(comment.author)  # Convert Redditor object to string for user_id
+    }
+
+    # If the comment has replies, extract them recursively
+    if hasattr(comment, "replies"):
+        comment_data["replies"] = [extract_replies(reply) for reply in comment.replies if not isinstance(reply, praw.models.MoreComments)]
+
+    return comment_data
 
 def main():
     # Replace with your own Reddit API credentials
@@ -43,11 +61,6 @@ def main():
             # Extract video URL, post title, and post text
             submission = reddit.submission(url=post_url)
             
-            video_url = submission.media["reddit_video"]["fallback_url"]
-            video_filename = submission.media['reddit_video']['fallback_url'].split('/')[-1]
-            if '.mp4' not in video_filename:
-                video_filename += '.mp4'
-            
             post_title = submission.title
             post_text = submission.selftext
             post_body_text = submission.selftext # content
@@ -55,12 +68,8 @@ def main():
             # Extract comments and their ratings information
             comments_data = []
             for comment in submission.comments:
-                comment_data = {
-                    "text": comment.body,
-                    "upvotes": comment.score,
-                    "downvotes": comment.downs
-                }
-                comments_data.append(comment_data)
+                if not isinstance(comment, praw.models.MoreComments):
+                    comments_data.append(extract_replies(comment))
 
             # Find the most upvoted comment
             most_upvoted_comment = max(comments_data, key=lambda x: x["upvotes"])
@@ -71,7 +80,6 @@ def main():
             comments_data = sorted(comments_data, key=lambda x: x["upvotes"] - x["downvotes"], reverse=True)
 
             # Print or process the extracted information as needed
-            print("Video URL:", video_url)
             print("Post Title:", post_title)
             print("Post Text:", post_text)
             print("Post Body Text:", post_body_text)
@@ -84,14 +92,22 @@ def main():
             comment_path = f"output/comments/{json_filename}"
             with open(comment_path, "w", encoding="utf-8") as json_file:
                 json.dump(comments_data, json_file, indent=4)
+            
+            video_filename, video_path, video_url = None, None, None
+            
+            if submission.media is not None:
+                video_url = submission.media["reddit_video"].get("fallback_url", None)
+                video_filename = video_url.split('/')[-1]
+                if '.mp4' not in video_filename:
+                    video_filename += '.mp4'
 
-            # You can download the video using requests library
-            video_response = requests.get(video_url)
-            mp4_index = video_filename.find(".mp4")
-            clean_video_filename = video_filename.replace(" ", "_").replace("/", "_")[:mp4_index+4]
-            video_path = f"output/videos/{clean_video_filename}"
-            with open(video_path, "wb") as video_file:
-                video_file.write(video_response.content)
+                # You can download the video using requests library
+                video_response = requests.get(video_url)
+                mp4_index = video_filename.find(".mp4")
+                clean_video_filename = video_filename.replace(" ", "_").replace("/", "_")[:mp4_index+4]
+                video_path = f"output/videos/{clean_video_filename}"
+                with open(video_path, "wb") as video_file:
+                    video_file.write(video_response.content)
                 
             csv_writer.writerow({
                 "Video URL": video_url,
@@ -100,7 +116,7 @@ def main():
                 "Post Text": post_text,
                 "Post Body Text": post_body_text,
                 "Video Path": video_path,
-                "Most Upvoted Comment": most_upvoted_comment["text"],
+                "Most Upvoted Comment": most_upvoted_comment["text"].replace("\n", " "),
                 "Most Upvoted Comment Rating": most_upvoted_comment["upvotes"] - most_upvoted_comment["downvotes"],
                 "Comment Path": comment_path
             })
