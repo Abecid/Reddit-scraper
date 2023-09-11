@@ -1,0 +1,22 @@
+[
+    {
+        "name": "StartingStrength",
+        "max": 2,
+        "url": "https://www.reddit.com/r/StartingStrength/"
+    }, 
+    {
+        "name": "Stronglifts5x5",
+        "max": 2,
+        "url": "https://www.reddit.com/r/Stronglifts5x5/"
+    },
+    {
+        "name": "formcheck",
+        "max": 2,
+        "url": "https://www.reddit.com/r/formcheck/"
+    }, 
+    {
+        "name": "531Discussion",
+        "max": 2,
+        "url": "https://www.reddit.com/r/531Discussion/"
+    }
+]
