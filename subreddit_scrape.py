@@ -132,7 +132,7 @@ def main():
         post_data = []
 
         # Fetch the posts
-        for submission in tqdm(subreddit.top(limit=subreddit_json.get("max", 10))):  # Adjust the limit as needed
+        for submission in tqdm(subreddit.top(limit=subreddit_json.get("max", 10), time_filter='all')):  # Adjust the limit as needed
             # Check if the post has a video
             if submission.is_video:
                 submission_json = save_submission(submission, subreddit_name)
