@@ -32,6 +32,9 @@ REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID")
 REDDIT_CILENT_SECRET = os.environ.get("REDDIT_CILENT_SECRET")
 REDDIT_USER_AGENT = os.environ.get("REDDIT_USER_AGENT")
 
+def post_exists(post_id, existing_posts):
+    return any(post["Post ID"] == post_id for post in existing_posts)
+
 def save_submission(submission, subreddit):
     post_title = submission.title
     post_text = submission.selftext
