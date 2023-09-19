@@ -109,17 +109,7 @@ def save_submission(submission, subreddit):
     
     return submission_json
 
-def main():
-    # Set up the Reddit client
-    reddit = praw.Reddit(
-        client_id=REDDIT_CLIENT_ID,
-        client_secret=REDDIT_CILENT_SECRET,
-        user_agent=REDDIT_USER_AGENT,
-        # username="YOUR_USERNAME",
-        # password="YOUR_PASSWORD",
-    )
-    
-    input_filename = "gym_subreddits.json"
+def save_subreddits(input_filename):
     input_data = json.load(open(f'input/{input_filename}'))
     
     for subreddit_json in input_data:
@@ -142,6 +132,19 @@ def main():
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w') as jsonfile:
             json.dump(post_data, jsonfile, indent=4)
+
+def main():
+    # Set up the Reddit client
+    reddit = praw.Reddit(
+        client_id=REDDIT_CLIENT_ID,
+        client_secret=REDDIT_CILENT_SECRET,
+        user_agent=REDDIT_USER_AGENT,
+        # username="YOUR_USERNAME",
+        # password="YOUR_PASSWORD",
+    )
+    
+    input_filename = "gym_subreddits.json"
+    save_subreddits(input_filename)
 
 
 
