@@ -39,6 +39,7 @@ def save_submission(submission, subreddit):
     upvotes = submission.score
     downvotes = submission.downs
     posted_datetime = submission.created_utc
+    post_id = submission.id
     
     clean_post_title = post_title.replace(" ", "_").replace("/", "_")
 
@@ -91,6 +92,7 @@ def save_submission(submission, subreddit):
             # video_file.write(video_response.content)
             
     submission_json = {
+        "Post ID": post_id,
         "Post Title": post_title,
         "subreddit": subreddit,
         "date": posted_datetime,
@@ -109,7 +111,7 @@ def save_submission(submission, subreddit):
     
     return submission_json
 
-def save_subreddits(input_filename):
+def save_subreddits(input_filename, reddit):
     input_data = json.load(open(f'input/{input_filename}'))
     
     for subreddit_json in input_data:
@@ -144,8 +146,7 @@ def main():
     )
     
     input_filename = "gym_subreddits.json"
-    save_subreddits(input_filename)
-
+    save_subreddits(input_filename, reddit)
 
 
 if __name__ == "__main__":
