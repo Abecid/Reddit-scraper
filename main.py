@@ -14,6 +14,8 @@ import os
 import praw
 from dotenv import load_dotenv
 
+from subreddit_scrape import save_subreddits
+
 # Load variables from .env file into environment
 load_dotenv()
 
@@ -122,7 +124,9 @@ def main():
         client_secret=REDDIT_CILENT_SECRET,
         user_agent=REDDIT_USER_AGENT
     )
-    save_posts(urls, reddit)
+    input_filename = "gym_subreddits.json"
+    save_subreddits(input_filename, reddit)
+    # save_posts(urls, reddit)
     
 if __name__ == "__main__":
     main()
