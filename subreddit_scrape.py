@@ -22,7 +22,7 @@ import praw
 import requests
 from dotenv import load_dotenv
 
-from main import extract_replies
+from utils import extract_replies
 
 # Load variables from .env file into environment
 load_dotenv()

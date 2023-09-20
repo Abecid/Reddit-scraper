@@ -44,13 +44,7 @@ def extract_replies(comment):
 
     return comment_data
 
-def main():
-    # Replace with your own Reddit API credentials
-    reddit = praw.Reddit(
-        client_id=REDDIT_CLIENT_ID,
-        client_secret=REDDIT_CILENT_SECRET,
-        user_agent=REDDIT_USER_AGENT
-    )
+def save_posts(urls, reddit):
     csv_filename = "reddit_data.csv"
     csv_output = f"output/{csv_filename}"
     with open(csv_output, "w", newline="", encoding="utf-8") as csv_file:
@@ -120,6 +114,15 @@ def main():
                 "Most Upvoted Comment Rating": most_upvoted_comment["upvotes"] - most_upvoted_comment["downvotes"],
                 "Comment Path": comment_path
             })
+
+def main():
+    # Replace with your own Reddit API credentials
+    reddit = praw.Reddit(
+        client_id=REDDIT_CLIENT_ID,
+        client_secret=REDDIT_CILENT_SECRET,
+        user_agent=REDDIT_USER_AGENT
+    )
+    save_posts(urls, reddit)
     
 if __name__ == "__main__":
     main()
