@@ -116,8 +116,12 @@ def save_submission(submission, subreddit, output_path="output"):
 
 def save_subreddits(input_filename, reddit, output_path="output"):
     input_data = json.load(open(f'input/{input_filename}'))
+    input_data_len = len(input_data)
     
-    for subreddit_json in input_data:
+    print(f"Saving total {input_data_len} subreddits")
+    
+    for index, subreddit_json in enumerate(input_data):
+        print(f"[{index+1}/{input_data_len}] Saving subreddit: {subreddit_json['name']}")
         subreddit_name = subreddit_json["name"]
         
         # Define the subreddit
