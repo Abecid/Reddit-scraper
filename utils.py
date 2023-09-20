@@ -1,3 +1,5 @@
+import praw
+
 def extract_replies(comment):
     """
     Recursive function to extract nested comments and their data.
