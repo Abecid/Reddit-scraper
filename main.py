@@ -125,7 +125,8 @@ def main():
         user_agent=REDDIT_USER_AGENT
     )
     input_filename = "gym_subreddits.json"
-    save_subreddits(input_filename, reddit)
+    output_path = "/home/amir/gymgpt/output"
+    save_subreddits(input_filename, reddit, output_path)
     # save_posts(urls, reddit)
     
 if __name__ == "__main__":

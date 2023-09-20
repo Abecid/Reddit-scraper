@@ -35,7 +35,7 @@ REDDIT_USER_AGENT = os.environ.get("REDDIT_USER_AGENT")
 def post_exists(post_id, existing_posts):
     return any(post["Post ID"] == post_id for post in existing_posts)
 
-def save_submission(submission, subreddit):
+def save_submission(submission, subreddit, output_path="output"):
     post_title = submission.title
     post_text = submission.selftext
     post_body_text = submission.selftext # content
@@ -87,7 +87,7 @@ def save_submission(submission, subreddit):
         clean_video_filename = video_filename.replace(" ", "_").replace("/", "_")[:mp4_index+4]
         datetime_str = datetime.utcfromtimestamp(submission.created_utc).strftime('%Y_%m_%d_%H_%M_%S')
         
-        video_path = f"output/videos/{subreddit}/{datetime_str}_{clean_video_filename}"
+        video_path = f"{output_path}/videos/{subreddit}/{datetime_str}_{clean_video_filename}"
         os.makedirs(os.path.dirname(video_path), exist_ok=True)
         with open(video_path, "wb") as video_file:
             for chunk in video_response.iter_content(chunk_size=8192):
@@ -114,7 +114,7 @@ def save_submission(submission, subreddit):
     
     return submission_json
 
-def save_subreddits(input_filename, reddit):
+def save_subreddits(input_filename, reddit, output_path="output"):
     input_data = json.load(open(f'input/{input_filename}'))
     
     for subreddit_json in input_data:
@@ -130,10 +130,10 @@ def save_subreddits(input_filename, reddit):
         for submission in tqdm(subreddit.top(limit=subreddit_json.get("max", 10), time_filter='all')):  # Adjust the limit as needed
             # Check if the post has a video
             if submission.is_video:
-                submission_json = save_submission(submission, subreddit_name)
+                submission_json = save_submission(submission, subreddit_name, output_path)
                 post_data.append(submission_json)
             
-        filepath = f'output/subreddits/{subreddit_name}.json'
+        filepath = f'{output_path}/subreddits/{subreddit_name}.json'
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         with open(filepath, 'w') as jsonfile:
             json.dump(post_data, jsonfile, indent=4)
