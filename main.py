@@ -126,7 +126,7 @@ def main():
     )
     input_filename = "gym_subreddits.json"
     output_path = "/home/amir/gymgpt/output"
-    save_subreddits(input_filename, reddit, output_path)
+    save_subreddits(input_filename, reddit, output_path, use_all_sort_types=True)
     # save_posts(urls, reddit)
     
 if __name__ == "__main__":
