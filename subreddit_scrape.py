@@ -133,7 +133,7 @@ def save_submission(submission, subreddit, output_path="output"):
     
     return submission_json
 
-def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_types=False):
+def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_types=False, restart=True):
     input_data = json.load(open(f'input/{input_filename}'))
     input_data_len = len(input_data)
     
@@ -150,36 +150,49 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
         sort_types = [
             {
                 "name": "top",
-                "func": subreddit.top
+                "func": subreddit.top,
+                "time_filter": 'all'
             }
             ,
             {
                 "name": "new",
-                "func": subreddit.new
+                "func": subreddit.new,
+                "time_filter": False
             }, 
             {
                 "name": "hot",
-                "func": subreddit.hot
+                "func": subreddit.hot,
+                "time_filter": False
             }, 
             {
                 "name": "controversial",
-                "func": subreddit.controversial
+                "func": subreddit.controversial,
+                "time_filter": 'all'
             },
             {
                 "name": "rising",
-                "func": subreddit.rising
+                "func": subreddit.rising,
+                "time_filter": False
             }
         ]
         
         post_data = []
+        if restart is False:
+            post_data = load_existing_data(f'{output_path}/subreddits/{subreddit_name}/submissions.json')
         
         if use_all_sort_types:
             for idx, sort_type in enumerate(sort_types):
                 print(f"Saving subreddit: {subreddit_name} with sort type: {sort_type['name']} ({idx+1}/{len(sort_types)})")
-                for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10), time_filter='all')):
-                    if submission.is_video and not post_exists(submission.id, post_data):
-                        submission_json = save_submission(submission, subreddit_name, output_path)
-                        post_data.append(submission_json)
+                if sort_type["time_filter"]:
+                    for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10), time_filter=sort_type["time_filter"])):
+                        if submission.is_video and not post_exists(submission.id, post_data):
+                            submission_json = save_submission(submission, subreddit_name, output_path)
+                            post_data.append(submission_json)
+                else:
+                    for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10))):
+                        if submission.is_video and not post_exists(submission.id, post_data):
+                            submission_json = save_submission(submission, subreddit_name, output_path)
+                            post_data.append(submission_json)
                 filepath = f'{output_path}/subreddits/{subreddit_name}/submissions.json'
                 save_data_to_file(post_data, filepath)
                 subreddit_info_object = {
