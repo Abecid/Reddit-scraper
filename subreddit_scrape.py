@@ -120,7 +120,7 @@ def save_submission(submission, subreddit, output_path="output"):
         "Upvotes": upvotes,
         "Downvotes": downvotes,
         "Post Text": post_text,
-        "Post Body Text": post_body_text,
+        # "Post Body Text": post_body_text,
         "Video Filename": video_filename,
         "Video URL": video_url,
         "Video Path": video_path,

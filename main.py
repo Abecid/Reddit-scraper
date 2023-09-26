@@ -110,7 +110,7 @@ def save_posts(urls, reddit):
                 "Video Filename": video_filename,
                 "Post Title": post_title,
                 "Post Text": post_text,
-                "Post Body Text": post_body_text,
+                # "Post Body Text": post_body_text,
                 "Video Path": video_path,
                 "Most Upvoted Comment": most_upvoted_comment["text"].replace("\n", " "),
                 "Most Upvoted Comment Rating": most_upvoted_comment["upvotes"] - most_upvoted_comment["downvotes"],
