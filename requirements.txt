@@ -1,5 +1,4 @@
 praw
 python-dotenv
 youtube_dl
-playwright
 requests
