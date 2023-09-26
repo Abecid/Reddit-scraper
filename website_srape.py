@@ -18,11 +18,11 @@ def general_video_scraper(url):
     except:
         print('Download with a specific video website scraper')
         if 'imgur' in url:
-            imgur_video_scrape(url)
-        elif 'youtube' in url:
-            download_youtube_video(url)
+            imgur_video_save(url)
+        # elif 'youtube' in url:
+        #     download_youtube_video(url)
 
-def imgur_video_save(url, save_path = "test_output/imgur_video.mp4"):
+def imgur_video_save(url, save_path = None):
     video_id = url.split('/')[-1]
     
     # Define the direct link to the video based on Imgur's pattern (this might change if Imgur updates their system)
@@ -30,6 +30,9 @@ def imgur_video_save(url, save_path = "test_output/imgur_video.mp4"):
 
     # Download the video
     response = requests.get(video_url, stream=True)
+    
+    if save_path is None:
+        save_path = f"test_output/{video_id}.mp4"
 
     if response.status_code == 200:
         with open(save_path, 'wb') as file:
@@ -76,6 +79,9 @@ def imgur_video_scrape(url, page):
     # video_url = video_tag.source['src']
     
 def download_youtube_video(youtube_url, output_path='.'):
+    if not isinstance(youtube_url, list):
+        youtube_url = [youtube_url]
+        
     ydl_opts = {
         'format': 'best', # best format (usually mp4)
         'outtmpl': f'{output_path}/%(title)s.%(ext)s',  # save file with video title as filename

@@ -2,4 +2,4 @@ praw
 python-dotenv
 youtube_dl
 playwright
-import requests
+requests
