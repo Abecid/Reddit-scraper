@@ -1,9 +1,4 @@
-[
-    {
-        "name": "StartingStrength",
-        "max": 1000,
-        "url": "https://www.reddit.com/r/StartingStrength/"
-    }, 
+[ 
     {
         "name": "Stronglifts5x5",
         "max": 1000,
@@ -18,6 +13,11 @@
         "name": "531Discussion",
         "max": 1000,
         "url": "https://www.reddit.com/r/531Discussion/"
+    },
+    {
+        "name": "StartingStrength",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/StartingStrength/"
     },
     {
         "name": "strength_training",
