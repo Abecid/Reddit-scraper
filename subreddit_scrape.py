@@ -324,6 +324,7 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 subreddit_video_in_link_info = {
                     "Total Videos Saved from External Links": len(video_links_saved_json),
                     "Total Videos failed to save from external links": len(videos_links_saved_failed_json),
+                    "Last sort type": sort_type["name"],
                     "Videos saved from external links": video_links_saved_json,
                     "Videos failed to save from external links": videos_links_saved_failed_json
                 }
