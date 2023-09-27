@@ -18,7 +18,6 @@ def general_video_scraper(url, video_path='.'):
         print(f"Video downloaded from {url} using youtube_dl")
 
     except Exception as e:
-        print('Download with a specific video website scraper')
         if 'imgur' in url:
             imgur_video_save(url, video_path)
         # elif 'youtube' in url:
@@ -45,9 +44,9 @@ def imgur_video_save(url, save_path = None):
         with open(save_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=1024):
                 file.write(chunk)
-        print(f"Video saved to {save_path}")
+        print(f"Imgur Video saved {url}")
     else:
-        print(f"Failed to download. Status code: {response.status_code}")
+        print(f"Imgur Failed to download. Status code: {response.status_code}; {url}")
 
 # Deprecated
 def imgur_video_scrape(url, page):

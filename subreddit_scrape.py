@@ -186,6 +186,13 @@ def get_submission_json(submission, subreddit):
     
     return submission_json
 
+def get_keys_in_json(json_data, keys:list):
+    new_json = {}
+    for key in keys:
+        new_json[key] = json_data.get(key, None)
+    return new_json
+    
+
 def get_submission(submission, subreddit_name, output_path, post_data):
     if not post_exists(submission.id, post_data):
         submission_json = get_submission_json(submission, subreddit_name)
@@ -208,7 +215,7 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                 submission_json["Video URL"] = None
                 submission_json["Video Path"] = video_path + ".mp4"
                 submission_json["External url"] = url
-                return submission_json
+                return get_keys_in_json(submission_json, ["Post ID", "External url"])
     return None
 
 
@@ -258,9 +265,16 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
         post_data = []
         if restart is False:
             post_data = load_existing_data(f'{output_path}/subreddits/{subreddit_name}/submissions.json')
-            
+        
         video_links_saved_json = []
         videos_links_saved_failed_json = []
+        
+        external_video_info = load_existing_data(f'{output_path}/subreddits/{subreddit_name}/video_link_info.json')
+        if len(external_video_info) > 0:
+            video_links_saved_json = external_video_info.get("Videos saved from external links", [])
+            video_links_saved_json = [{"Post ID": item["Post ID"], "External url": item["External url"]} for item in video_links_saved_json]
+            videos_links_saved_failed_json = external_video_info.get("Videos failed to save from external links", [])
+            videos_links_saved_failed_json = [{"Post ID": item["Post ID"], "External url": item["External url"]} for item in videos_links_saved_failed_json]
         
         if use_all_sort_types:
             for idx, sort_type in enumerate(sort_types):
@@ -272,7 +286,7 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                             if submission_json.get("Video Failed", False) is False: 
                                 post_data.append(submission_json)
                                 if submission_json.get("External url", None) is not None:
-                                    video_links_saved_json.append(submission_json)
+                                    video_links_saved_json.append(get_keys_in_json(submission_json, ["Post ID", "External url"]))
                             else: videos_links_saved_failed_json.append(submission_json)
                         # if not post_exists(submission.id, post_data):
                         #     if submission.is_video:
@@ -288,7 +302,8 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                             if submission_json.get("Video Failed", False) is False: 
                                 post_data.append(submission_json)
                                 if submission_json.get("External url", None) is not None:
-                                    video_links_saved_json.append(submission_json)
+                                    # video_links_saved_json.append(submission_json)
+                                    video_links_saved_json.append(get_keys_in_json(submission_json, ["Post ID", "External url"]))
                             else: videos_links_saved_failed_json.append(submission_json)
                         # if submission.is_video and not post_exists(submission.id, post_data):
                         #     submission_json = save_submission(submission, subreddit_name, output_path)
