@@ -5,6 +5,21 @@ import youtube_dl
 
 def general_video_scraper(url, video_path='.'):
     try:
+        ydl_opts = {
+            'quiet': True,  # Don't print info to stdout
+            'no_warnings': True,  # Don't print warnings
+            'forced_generic_extractor': True,  # Use generic information extractor
+            'extract_flat': True,  # Only extract video info, don't download
+        }
+
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            video_duration = info_dict.get('duration', 0)  # in seconds
+
+        # Check if the video duration is less than 10 minutes
+        if video_duration > 600: # 10 minutes
+            return False
+        
         # Using youtube_dl to attempt video extraction
         ydl_opts = {
             'format': 'best',
