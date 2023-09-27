@@ -23,6 +23,8 @@ load_dotenv()
 REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID")
 REDDIT_CILENT_SECRET = os.environ.get("REDDIT_CILENT_SECRET")
 REDDIT_USER_AGENT = os.environ.get("REDDIT_USER_AGENT")
+REDDIT_USERNAME = os.environ.get("REDDIT_USERNAME")
+REDDIT_PW = os.environ.get("REDDIT_PW")
 
 # URL of the Reddit post
 post_url = "https://www.reddit.com/r/strength_training/comments/1655isb/back_rounding_on_heavy_deadlift_infoquestion_in/"
@@ -122,7 +124,9 @@ def main():
     reddit = praw.Reddit(
         client_id=REDDIT_CLIENT_ID,
         client_secret=REDDIT_CILENT_SECRET,
-        user_agent=REDDIT_USER_AGENT
+        user_agent=REDDIT_USER_AGENT,
+        username=REDDIT_USERNAME,
+        password=REDDIT_PW
     )
     input_filename = "gym_subreddits.json"
     output_path = "/home/amir/gymgpt/output"
