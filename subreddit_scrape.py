@@ -137,7 +137,8 @@ def save_submission(submission, subreddit, output_path="output"):
 
 def url_exists_in_post(post_text):
     # match = re.search(r'https?://imgur\.com[a-zA-Z0-9/]*', post_text)
-    match = re.search(r'https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:[a-zA-Z0-9/&%?#._-]*)?', post_text)
+    # match = re.search(r'https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:[a-zA-Z0-9/&%?#._-]*)?', post_text)
+    match = re.search(r'https?://(imgur\.com|youtube\.com|youtu\.be|vimeo\.com|streamable\.com|gfycat\.com)[a-zA-Z0-9/&%?#._-]*', post_text)
     if match:
         imgur_url = match.group(0)
         return imgur_url
