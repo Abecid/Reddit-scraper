@@ -205,7 +205,11 @@ def get_submission(submission, subreddit_name, output_path, post_data):
             video_path = f"{output_path}/subreddits/{subreddit_name}/videos/{submission.id}"
             if url is not None:
                 try:
-                    general_video_scraper(url, video_path)
+                    success = general_video_scraper(url, video_path)
+                    if not success:
+                        submission_json["Video Failed"] = True
+                        submission_json["External url"] = url
+                        return submission_json
                 except Exception as e:
                     submission_json["Video Failed"] = True
                     submission_json["External url"] = url

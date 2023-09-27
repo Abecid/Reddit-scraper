@@ -16,14 +16,16 @@ def general_video_scraper(url, video_path='.'):
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
         print(f"Video downloaded from {url} using youtube_dl")
+        return True
 
     except Exception as e:
         if 'imgur' in url:
-            imgur_video_save(url, video_path)
+            return imgur_video_save(url, video_path)
         # elif 'youtube' in url:
         #     download_youtube_video(url)
         else:
             print(f'Can\'t download video from this website. {url}')
+            return False
 
 def imgur_video_save(url, save_path = None):
     video_id = url.split('/')[-1]
@@ -45,8 +47,10 @@ def imgur_video_save(url, save_path = None):
             for chunk in response.iter_content(chunk_size=1024):
                 file.write(chunk)
         print(f"Imgur Video saved {url}")
+        return True
     else:
         print(f"Imgur Failed to download. Status code: {response.status_code}; {url}")
+        return False
 
 # Deprecated
 def imgur_video_scrape(url, page):
