@@ -200,6 +200,11 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                     general_video_scraper(url, video_path)
                 except Exception as e:
                     print(f"Error saving vdieo with url: {url}")
+                submission_json["Video Filename"] = None
+                submission_json["Video URL"] = None
+                submission_json["Video Path"] = video_path + ".mp4"
+                return submission_json
+    return None
 
 
 def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_types=False, restart=True):
@@ -255,7 +260,7 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 if sort_type["time_filter"]:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10), time_filter=sort_type["time_filter"])):
                         submission_json = get_submission(submission, subreddit_name, output_path, post_data)
-                        post_data.append(submission_json)
+                        if submission_json is not None: post_data.append(submission_json)
                         # if not post_exists(submission.id, post_data):
                         #     if submission.is_video:
                         #         submission_json = save_submission(submission, subreddit_name, output_path)
@@ -266,7 +271,7 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 else:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10))):
                         submission_json = get_submission(submission, subreddit_name, output_path, post_data)
-                        post_data.append(submission_json)
+                        if submission_json is not None: post_data.append(submission_json)
                         # if submission.is_video and not post_exists(submission.id, post_data):
                         #     submission_json = save_submission(submission, subreddit_name, output_path)
                         #     post_data.append(submission_json)

@@ -17,7 +17,7 @@ def general_video_scraper(url, video_path='.'):
             ydl.download([url])
         print(f"Video downloaded from {url} using youtube_dl")
 
-    except:
+    except Exception as e:
         print('Download with a specific video website scraper')
         if 'imgur' in url:
             imgur_video_save(url, video_path)

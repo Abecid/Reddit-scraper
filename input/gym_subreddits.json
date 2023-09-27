@@ -18,5 +18,20 @@
         "name": "531Discussion",
         "max": 1000,
         "url": "https://www.reddit.com/r/531Discussion/"
+    },
+    {
+        "name": "strength_training",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/strength_training/"
+    },
+    {
+        "name": "weightlifting",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/weightlifting/"
+    },
+    {
+        "name": "GYM",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/GYM/"
     }
 ]
