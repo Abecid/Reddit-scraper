@@ -3,12 +3,14 @@ import requests
 import re
 import youtube_dl
 
-def general_video_scraper(url):
+def general_video_scraper(url, video_path='.'):
     try:
         # Using youtube_dl to attempt video extraction
         ydl_opts = {
             'format': 'best',
-            'outtmpl': 'downloaded_video.%(ext)s'
+            'outtmpl': f'{video_path}.%(ext)s'
+            # 'outtmpl': f'{output_path}/%(title)s.%(ext)s'
+            # 'outtmpl': 'downloaded_video.%(ext)s'
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -18,9 +20,11 @@ def general_video_scraper(url):
     except:
         print('Download with a specific video website scraper')
         if 'imgur' in url:
-            imgur_video_save(url)
+            imgur_video_save(url, video_path)
         # elif 'youtube' in url:
         #     download_youtube_video(url)
+        else:
+            print(f'Can\'t download video from this website. {url}')
 
 def imgur_video_save(url, save_path = None):
     video_id = url.split('/')[-1]
@@ -33,6 +37,9 @@ def imgur_video_save(url, save_path = None):
     
     if save_path is None:
         save_path = f"test_output/{video_id}.mp4"
+    
+    if '.mp4' not in save_path:
+        save_path += '.mp4'
 
     if response.status_code == 200:
         with open(save_path, 'wb') as file:

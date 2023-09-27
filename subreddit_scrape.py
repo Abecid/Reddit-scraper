@@ -16,6 +16,7 @@
 import os
 from datetime import datetime
 from tqdm import tqdm
+import re
 
 import json
 import praw
@@ -23,6 +24,7 @@ import requests
 from dotenv import load_dotenv
 
 from utils import extract_replies
+from website_srape import general_video_scraper
 
 # Load variables from .env file into environment
 load_dotenv()
@@ -133,6 +135,73 @@ def save_submission(submission, subreddit, output_path="output"):
     
     return submission_json
 
+def url_exists_in_post(post_text):
+    # match = re.search(r'https?://imgur\.com[a-zA-Z0-9/]*', post_text)
+    match = re.search(r'https?://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:[a-zA-Z0-9/&%?#._-]*)?', post_text)
+    if match:
+        imgur_url = match.group(0)
+        return imgur_url
+    return None
+
+def get_submission_json(submission, subreddit):
+    post_title = submission.title
+    post_text = submission.selftext
+    post_body_text = submission.selftext # content
+    upvotes = submission.score
+    downvotes = submission.downs
+    posted_datetime = submission.created_utc
+    post_id = submission.id
+    
+    clean_post_title = post_title.replace(" ", "_").replace("/", "_")
+
+    # Extract comments and their ratings information
+    comments_data = []
+    for comment in submission.comments:
+        if not isinstance(comment, praw.models.MoreComments):
+            comments_data.append(extract_replies(comment))
+
+    most_upvoted_comment = None
+    
+    if len(comments_data) > 0:        
+        # Find the most upvoted comment
+        most_upvoted_comment = max(comments_data, key=lambda x: x["upvotes"])
+        
+        # Find the highest rated comment
+        highest_reated_comment = max(comments_data, key=lambda x: x["upvotes"] - x["downvotes"])
+        
+        comments_data = sorted(comments_data, key=lambda x: x["upvotes"] - x["downvotes"], reverse=True)
+    
+    submission_json = {
+        "Post ID": post_id,
+        "Post Title": post_title,
+        "subreddit": subreddit,
+        "date": posted_datetime,
+        "Upvotes": upvotes,
+        "Downvotes": downvotes,
+        "Post Text": post_text,
+        "Most Upvoted Comment": most_upvoted_comment,
+        "Comments": comments_data        
+    }
+    
+    return submission_json
+
+def get_submission(submission, subreddit_name, output_path, post_data):
+    if not post_exists(submission.id, post_data):
+        submission_json = get_submission_json(submission, subreddit_name)
+        if submission.is_video:
+            submission_json = save_submission(submission, subreddit_name, output_path)
+            # post_data.append(submission_json)
+            return submission_json
+        else:
+            url = url_exists_in_post(submission.selftext)
+            video_path = f"{output_path}/subreddits/{subreddit_name}/videos/{submission.id}"
+            if url is not None:
+                try:
+                    general_video_scraper(url, video_path)
+                except Exception as e:
+                    print(f"Error saving vdieo with url: {url}")
+
+
 def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_types=False, restart=True):
     input_data = json.load(open(f'input/{input_filename}'))
     input_data_len = len(input_data)
@@ -185,14 +254,22 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 print(f"Saving subreddit: {subreddit_name} with sort type: {sort_type['name']} ({idx+1}/{len(sort_types)})")
                 if sort_type["time_filter"]:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10), time_filter=sort_type["time_filter"])):
-                        if submission.is_video and not post_exists(submission.id, post_data):
-                            submission_json = save_submission(submission, subreddit_name, output_path)
-                            post_data.append(submission_json)
+                        submission_json = get_submission(submission, subreddit_name, output_path, post_data)
+                        post_data.append(submission_json)
+                        # if not post_exists(submission.id, post_data):
+                        #     if submission.is_video:
+                        #         submission_json = save_submission(submission, subreddit_name, output_path)
+                        #         post_data.append(submission_json)
+                        #     else:
+                        #         # Check if there is a url here
+                        #         pass
                 else:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10))):
-                        if submission.is_video and not post_exists(submission.id, post_data):
-                            submission_json = save_submission(submission, subreddit_name, output_path)
-                            post_data.append(submission_json)
+                        submission_json = get_submission(submission, subreddit_name, output_path, post_data)
+                        post_data.append(submission_json)
+                        # if submission.is_video and not post_exists(submission.id, post_data):
+                        #     submission_json = save_submission(submission, subreddit_name, output_path)
+                        #     post_data.append(submission_json)
                 filepath = f'{output_path}/subreddits/{subreddit_name}/submissions.json'
                 save_data_to_file(post_data, filepath)
                 subreddit_info_object = {
