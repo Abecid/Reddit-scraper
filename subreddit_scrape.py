@@ -199,10 +199,14 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                 try:
                     general_video_scraper(url, video_path)
                 except Exception as e:
-                    print(f"Error saving vdieo with url: {url}")
+                    submission_json["Video Failed"] = True
+                    submission_json["External url"] = url
+                    # print(f"Error saving vdieo with url: {url}")
+                    return submission_json
                 submission_json["Video Filename"] = None
                 submission_json["Video URL"] = None
                 submission_json["Video Path"] = video_path + ".mp4"
+                submission_json["External url"] = url
                 return submission_json
     return None
 
@@ -253,6 +257,9 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
         post_data = []
         if restart is False:
             post_data = load_existing_data(f'{output_path}/subreddits/{subreddit_name}/submissions.json')
+            
+        video_links_saved_json = []
+        videos_links_saved_failed_json = []
         
         if use_all_sort_types:
             for idx, sort_type in enumerate(sort_types):
@@ -260,7 +267,12 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 if sort_type["time_filter"]:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10), time_filter=sort_type["time_filter"])):
                         submission_json = get_submission(submission, subreddit_name, output_path, post_data)
-                        if submission_json is not None: post_data.append(submission_json)
+                        if submission_json is not None:
+                            if submission_json.get("Video Failed", False) is False: 
+                                post_data.append(submission_json)
+                                if submission_json.get("External url", None) is not None:
+                                    video_links_saved_json.append(submission_json)
+                            else: videos_links_saved_failed_json.append(submission_json)
                         # if not post_exists(submission.id, post_data):
                         #     if submission.is_video:
                         #         submission_json = save_submission(submission, subreddit_name, output_path)
@@ -271,7 +283,12 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 else:
                     for submission in tqdm(sort_type["func"](limit=subreddit_json.get("max", 10))):
                         submission_json = get_submission(submission, subreddit_name, output_path, post_data)
-                        if submission_json is not None: post_data.append(submission_json)
+                        if submission_json is not None:
+                            if submission_json.get("Video Failed", False) is False: 
+                                post_data.append(submission_json)
+                                if submission_json.get("External url", None) is not None:
+                                    video_links_saved_json.append(submission_json)
+                            else: videos_links_saved_failed_json.append(submission_json)
                         # if submission.is_video and not post_exists(submission.id, post_data):
                         #     submission_json = save_submission(submission, subreddit_name, output_path)
                         #     post_data.append(submission_json)
@@ -283,6 +300,15 @@ def save_subreddits(input_filename, reddit, output_path="output", use_all_sort_t
                 }
                 subreddit_info_filepath = f'{output_path}/subreddits/{subreddit_name}/info.json'
                 save_data_to_file(subreddit_info_object, subreddit_info_filepath)
+                
+                subreddit_video_in_link_info = {
+                    "Total Videos Saved from External Links": len(video_links_saved_json),
+                    "Total Videos failed to save from external links": len(videos_links_saved_failed_json),
+                    "Videos saved from external links": video_links_saved_json,
+                    "Videos failed to save from external links": videos_links_saved_failed_json
+                }
+                subreddit_video_in_link_info_path = f'{output_path}/subreddits/{subreddit_name}/video_link_info.json'
+                save_data_to_file(subreddit_video_in_link_info, subreddit_video_in_link_info_path)
                 
         else:
             # Fetch the posts
