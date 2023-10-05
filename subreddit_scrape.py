@@ -229,7 +229,8 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                 submission_json["Video URL"] = None
                 submission_json["Video Path"] = video_path + ".mp4"
                 submission_json["External url"] = url
-                return get_keys_in_json(submission_json, ["Post ID", "External url"])
+                return submission_json
+                # return get_keys_in_json(submission_json, ["Post ID", "External url"])
     return None
 
 
