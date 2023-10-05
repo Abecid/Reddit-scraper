@@ -207,7 +207,7 @@ def get_submission(submission, subreddit_name, output_path, post_data):
             # post_data.append(submission_json)
             return submission_json
         else:
-            return None
+            # return None
             url = url_exists_in_post(submission.selftext)
             video_path = f"{output_path}/subreddits/{subreddit_name}/videos/{submission.id}"
             if url is not None:
