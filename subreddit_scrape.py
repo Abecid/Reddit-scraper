@@ -208,6 +208,8 @@ def get_submission(submission, subreddit_name, output_path, post_data):
             return submission_json
         else:
             # return None
+            # submission_json = get_submission_json(submission, subreddit_name)
+            submission_json = {}
             url = url_exists_in_post(submission.selftext)
             video_path = f"{output_path}/subreddits/{subreddit_name}/videos/{submission.id}"
             if url is not None:
@@ -222,6 +224,7 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                     submission_json["External url"] = url
                     # print(f"Error saving vdieo with url: {url}")
                     return submission_json
+                submission_json = get_submission_json(submission, subreddit_name)
                 submission_json["Video Filename"] = None
                 submission_json["Video URL"] = None
                 submission_json["Video Path"] = video_path + ".mp4"
