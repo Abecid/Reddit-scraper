@@ -17,6 +17,7 @@ import os
 from datetime import datetime
 from tqdm import tqdm
 import re
+import time
 
 import json
 import praw
@@ -157,9 +158,14 @@ def get_submission_json(submission, subreddit):
 
     # Extract comments and their ratings information
     comments_data = []
-    for comment in submission.comments:
-        if not isinstance(comment, praw.models.MoreComments):
-            comments_data.append(extract_replies(comment))
+    for _ in range(3):  # retry up to 5 times
+        try:
+            for comment in submission.comments:
+                if not isinstance(comment, praw.models.MoreComments):
+                    comments_data.append(extract_replies(comment))
+            break
+        except Exception as e:
+            time.sleep(60) 
 
     most_upvoted_comment = None
     
@@ -201,6 +207,7 @@ def get_submission(submission, subreddit_name, output_path, post_data):
             # post_data.append(submission_json)
             return submission_json
         else:
+            return None
             url = url_exists_in_post(submission.selftext)
             video_path = f"{output_path}/subreddits/{subreddit_name}/videos/{submission.id}"
             if url is not None:
