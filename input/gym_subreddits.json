@@ -1,5 +1,20 @@
 [ 
     {
+        "name": "strength_training",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/strength_training/"
+    },
+    {
+        "name": "weightlifting",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/weightlifting/"
+    },
+    {
+        "name": "GYM",
+        "max": 1000,
+        "url": "https://www.reddit.com/r/GYM/"
+    },
+    {
         "name": "Stronglifts5x5",
         "max": 1000,
         "url": "https://www.reddit.com/r/Stronglifts5x5/"
@@ -18,20 +33,5 @@
         "name": "StartingStrength",
         "max": 1000,
         "url": "https://www.reddit.com/r/StartingStrength/"
-    },
-    {
-        "name": "strength_training",
-        "max": 1000,
-        "url": "https://www.reddit.com/r/strength_training/"
-    },
-    {
-        "name": "weightlifting",
-        "max": 1000,
-        "url": "https://www.reddit.com/r/weightlifting/"
-    },
-    {
-        "name": "GYM",
-        "max": 1000,
-        "url": "https://www.reddit.com/r/GYM/"
     }
 ]
