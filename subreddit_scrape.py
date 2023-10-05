@@ -201,7 +201,7 @@ def get_keys_in_json(json_data, keys:list):
 
 def get_submission(submission, subreddit_name, output_path, post_data):
     if not post_exists(submission.id, post_data):
-        submission_json = get_submission_json(submission, subreddit_name)
+        # submission_json = get_submission_json(submission, subreddit_name)
         if submission.is_video:
             submission_json = save_submission(submission, subreddit_name, output_path)
             # post_data.append(submission_json)
