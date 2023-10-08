@@ -8,7 +8,7 @@ import praw
 from utils import extract_replies
 from subreddit_scrape import load_existing_data, save_data_to_file, get_keys_in_json, get_submission, post_exists
 
-def check_post_posted_recently(posted_datetime, day=7):
+def check_post_posted_recently(posted_datetime, days=7):
     # Get the post's datetime
     posted_datetime = datetime.datetime.utcfromtimestamp(posted_datetime)
 
@@ -19,7 +19,7 @@ def check_post_posted_recently(posted_datetime, day=7):
     current_datetime_utc = current_datetime_pacific.astimezone(pytz.utc)
 
     # Check if the post was made within the last 7 days
-    is_within_week = (current_datetime_utc - posted_datetime) < datetime.timedelta(days=7)
+    is_within_week = (current_datetime_utc - posted_datetime) < datetime.timedelta(days=days)
 
     print(is_within_week)  #
 
