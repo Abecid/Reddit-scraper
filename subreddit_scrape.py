@@ -199,7 +199,7 @@ def get_keys_in_json(json_data, keys:list):
     return new_json
     
 
-def get_submission(submission, subreddit_name, output_path, post_data):
+def get_submission(submission, subreddit_name, output_path, post_data, update_comments=False):
     if not post_exists(submission.id, post_data):
         # submission_json = get_submission_json(submission, subreddit_name)
         if submission.is_video:
@@ -231,6 +231,12 @@ def get_submission(submission, subreddit_name, output_path, post_data):
                 submission_json["External url"] = url
                 return submission_json
                 # return get_keys_in_json(submission_json, ["Post ID", "External url"])
+    else:
+        if update_comments is not False:
+            # Get comments
+            # Update Json
+            # return json
+            pass
     return None
 
 

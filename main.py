@@ -10,11 +10,13 @@ import requests
 import csv
 import json
 import os
+import argparse
 
 import praw
 from dotenv import load_dotenv
 
 from subreddit_scrape import save_subreddits
+from daily_scrape import save_daily_scrape
 
 # Load variables from .env file into environment
 load_dotenv()
@@ -120,6 +122,11 @@ def save_posts(urls, reddit):
             })
 
 def main():
+    parser = argparse.ArgumentParser(description="Run Reddit script")
+    parser.add_argument('--daily', action='store_true', help='Use daily_save_subreddits function instead')
+    args = parser.parse_args()
+    use_daily_function=args.daily
+    
     # Replace with your own Reddit API credentials
     reddit = praw.Reddit(
         client_id=REDDIT_CLIENT_ID,
@@ -130,7 +137,10 @@ def main():
     )
     input_filename = "gym_subreddits.json"
     output_path = "/home/amir/gymgpt/output"
-    save_subreddits(input_filename, reddit, output_path, use_all_sort_types=True, restart=False)
+    if use_daily_function:
+        save_daily_scrape(input_filename, reddit, output_path)
+    else:
+        save_subreddits(input_filename, reddit, output_path, use_all_sort_types=True, restart=False)
     # save_posts(urls, reddit)
     
 if __name__ == "__main__":
