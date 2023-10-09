@@ -1,6 +1,6 @@
 import json
 from tqdm import tqdm
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 import praw
@@ -10,16 +10,16 @@ from subreddit_scrape import load_existing_data, save_data_to_file, get_keys_in_
 
 def check_post_posted_recently(posted_datetime, days=7):
     # Get the post's datetime
-    posted_datetime = datetime.datetime.utcfromtimestamp(posted_datetime)
+    posted_datetime = datetime.utcfromtimestamp(posted_datetime)
 
     # Get the current time in Pacific Time Zone (California is in the Pacific Time Zone)
-    current_datetime_pacific = datetime.datetime.now(pytz.timezone('US/Pacific'))
+    current_datetime_pacific = datetime.now(pytz.timezone('US/Pacific'))
 
     # Convert the current time back to UTC to be consistent with submission.created_utc
     current_datetime_utc = current_datetime_pacific.astimezone(pytz.utc)
 
     # Check if the post was made within the last 7 days
-    is_within_week = (current_datetime_utc - posted_datetime) < datetime.timedelta(days=days)
+    is_within_week = (current_datetime_utc - posted_datetime) < timedelta(days=days)
 
     return is_within_week  #
 
@@ -75,6 +75,9 @@ def save_daily_scrape(input_filename, reddit, output_path="output"):
         post_data = []
         post_data = load_existing_data(f'{output_path}/subreddits/{subreddit_name}/submissions.json')
         
+        updated = 0
+        newly_added = 0
+        
         # video_links_saved_json = []
         # videos_links_saved_failed_json = []
         
@@ -94,9 +97,11 @@ def save_daily_scrape(input_filename, reddit, output_path="output"):
                         for index, item in enumerate(post_data):
                             if item.get("Post ID", None) == submission_json.get("Post ID", None):
                                 post_data[index] = submission_json
+                                updated += 1
                                 break
                     else:
                         post_data.append(submission_json)
+                        newly_added += 1
                 #         if submission_json.get("External url", None) is not None:
                 #             # video_links_saved_json.append(submission_json)
                 #             video_links_saved_json.append(get_keys_in_json(submission_json, ["Post ID", "External url"]))
@@ -109,6 +114,8 @@ def save_daily_scrape(input_filename, reddit, output_path="output"):
     subreddit_info_object["length"] = len(post_data)
     subreddit_info_object["Last Update Date"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     save_data_to_file(subreddit_info_object, subreddit_info_filepath)
+    
+    print(f"Updated {updated} posts and added {newly_added} new posts")
     
     # subreddit_video_in_link_info = {
     #     "Total Videos Saved from External Links": len(video_links_saved_json),
