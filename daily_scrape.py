@@ -84,7 +84,7 @@ def save_daily_scrape(input_filename, reddit, output_path="output"):
         #     video_links_saved_json = [{"Post ID": item["Post ID"], "External url": item["External url"]} for item in video_links_saved_json]
         #     videos_links_saved_failed_json = external_video_info.get("Videos failed to save from external links", [])
         #     videos_links_saved_failed_json = [{"Post ID": item["Post ID"], "External url": item["External url"]} for item in videos_links_saved_failed_json]
-        for submission in tqdm(subreddit.new(limit=subreddit_json.get("max", 10), time_filter='all')):  # Adjust the limit as needed
+        for submission in tqdm(subreddit.new(limit=subreddit_json.get("max", 10))):  # Adjust the limit as needed
             # Check if the post has a video
             submission_json = get_updated_sumbission(submission, subreddit_name, output_path, post_data)
             if submission_json is not None:
