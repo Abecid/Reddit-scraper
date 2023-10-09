@@ -9,19 +9,19 @@ from utils import extract_replies
 from subreddit_scrape import load_existing_data, save_data_to_file, get_keys_in_json, get_submission, post_exists
 
 def check_post_posted_recently(posted_datetime, days=7):
-    # Get the post's datetime
-    posted_datetime = datetime.utcfromtimestamp(posted_datetime)
+    # Get the post's datetime and make it offset-aware in UTC timezone
+    posted_datetime = datetime.utcfromtimestamp(posted_datetime).replace(tzinfo=pytz.utc)
 
     # Get the current time in Pacific Time Zone (California is in the Pacific Time Zone)
     current_datetime_pacific = datetime.now(pytz.timezone('US/Pacific'))
 
-    # Convert the current time back to UTC to be consistent with submission.created_utc
+    # Convert the current time back to UTC
     current_datetime_utc = current_datetime_pacific.astimezone(pytz.utc)
 
     # Check if the post was made within the last 7 days
     is_within_week = (current_datetime_utc - posted_datetime) < timedelta(days=days)
 
-    return is_within_week  #
+    return is_within_week
 
 def get_updated_comments(submission, original_json):
     posted_datetime = submission.created_utc
