@@ -106,30 +106,30 @@ def save_daily_scrape(input_filename, reddit, output_path="output"):
                 #             # video_links_saved_json.append(submission_json)
                 #             video_links_saved_json.append(get_keys_in_json(submission_json, ["Post ID", "External url"]))
                 # else: videos_links_saved_failed_json.append(submission_json)
-    filepath = f'{output_path}/subreddits/{subreddit_name}/submissions.json'
-    save_data_to_file(post_data, filepath)
-    
-    subreddit_info_filepath = f'{output_path}/subreddits/{subreddit_name}/info.json'
-    subreddit_info_object = load_existing_data(subreddit_info_filepath)
-    subreddit_info_object["length"] = len(post_data)
-    subreddit_info_object["Last Update Date"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    save_data_to_file(subreddit_info_object, subreddit_info_filepath)
-    
-    print(f"Updated {updated} posts and added {newly_added} new posts")
-    
-    # subreddit_video_in_link_info = {
-    #     "Total Videos Saved from External Links": len(video_links_saved_json),
-    #     "Total Videos failed to save from external links": len(videos_links_saved_failed_json),
-    #     "Last sort type": "new",
-    #     "Videos saved from external links": video_links_saved_json,
-    #     "Videos failed to save from external links": videos_links_saved_failed_json
-    # }
-    
-    # subreddit_video_in_link_info_path = f'{output_path}/subreddits/{subreddit_name}/video_link_info.json'
-    # subreddit_video_in_link_info = load_existing_data(subreddit_video_in_link_info_path)
-    # subreddit_video_in_link_info["Total Videos Saved from External Links"] = len(video_links_saved_json)
-    # subreddit_video_in_link_info["Total Videos failed to save from external links"] = len(videos_links_saved_failed_json)
-    # save_data_to_file(subreddit_video_in_link_info, subreddit_video_in_link_info_path)
+        filepath = f'{output_path}/subreddits/{subreddit_name}/submissions.json'
+        save_data_to_file(post_data, filepath)
+        
+        subreddit_info_filepath = f'{output_path}/subreddits/{subreddit_name}/info.json'
+        subreddit_info_object = load_existing_data(subreddit_info_filepath)
+        subreddit_info_object["length"] = len(post_data)
+        subreddit_info_object["Last Update Date"] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        save_data_to_file(subreddit_info_object, subreddit_info_filepath)
+        
+        print(f"Updated {updated} posts and added {newly_added} new posts")
+        
+        # subreddit_video_in_link_info = {
+        #     "Total Videos Saved from External Links": len(video_links_saved_json),
+        #     "Total Videos failed to save from external links": len(videos_links_saved_failed_json),
+        #     "Last sort type": "new",
+        #     "Videos saved from external links": video_links_saved_json,
+        #     "Videos failed to save from external links": videos_links_saved_failed_json
+        # }
+        
+        # subreddit_video_in_link_info_path = f'{output_path}/subreddits/{subreddit_name}/video_link_info.json'
+        # subreddit_video_in_link_info = load_existing_data(subreddit_video_in_link_info_path)
+        # subreddit_video_in_link_info["Total Videos Saved from External Links"] = len(video_links_saved_json)
+        # subreddit_video_in_link_info["Total Videos failed to save from external links"] = len(videos_links_saved_failed_json)
+        # save_data_to_file(subreddit_video_in_link_info, subreddit_video_in_link_info_path)
 
 def main():
     pass
