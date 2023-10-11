@@ -1,12 +1,18 @@
 import json
 from tqdm import tqdm
 from datetime import datetime, timedelta
+import os
 
+from dotenv import load_dotenv
 import pytz
 import praw
 
 from utils import extract_replies
 from subreddit_scrape import load_existing_data, save_data_to_file, get_keys_in_json, get_submission, post_exists
+
+load_dotenv()
+
+TEST = os.environ.get("TEST_MODE", False)
 
 def check_post_posted_recently(posted_datetime, days=7):
     # Get the post's datetime and make it offset-aware in UTC timezone
@@ -59,7 +65,10 @@ def get_updated_sumbission(submission, subreddit_name, output_path, post_data):
         return get_updated_comments(submission, original_json)
 
 def save_daily_scrape(input_filename, reddit, output_path="output"):
-    input_data = json.load(open(f'input/{input_filename}'))
+    input_file_path = f'input/{input_filename}'
+    if not TEST:
+        input_file_path = f'/shared/alee00/Reddit-scraper/input/{input_filename}'
+    input_data = json.load(open(input_file_path))
     input_data_len = len(input_data)
     
     print(f"Saving total {input_data_len} subreddits")
