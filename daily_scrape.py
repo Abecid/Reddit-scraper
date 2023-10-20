@@ -55,7 +55,7 @@ def get_updated_comments(submission, original_json):
         original_json['Last Update Date'] = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         return original_json
     else:
-        return original_json
+        return None
 
 def get_updated_sumbission(submission, subreddit_name, output_path, post_data):
     if not post_exists(submission.id, post_data):
